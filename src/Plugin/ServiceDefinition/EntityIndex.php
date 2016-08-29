@@ -5,11 +5,11 @@ namespace Drupal\services\Plugin\ServiceDefinition;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\services\ServiceDefinitionBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Drupal\Core\Routing\RouteMatchInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @ServiceDefinition(
@@ -45,6 +45,7 @@ class EntityIndex extends ServiceDefinitionBase implements ContainerFactoryPlugi
       $configuration,
       $plugin_id,
       $plugin_definition,
+      $container->get('serializer'),
       $container->get('entity.query'),
       $container->get('entity_type.manager')
     );
@@ -57,8 +58,9 @@ class EntityIndex extends ServiceDefinitionBase implements ContainerFactoryPlugi
    * @param \Drupal\Core\Entity\Query\QueryFactory $query_factory
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, QueryFactory $query_factory, EntityTypeManagerInterface $entity_type_manager) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, SerializerInterface $serializer, QueryFactory $query_factory, EntityTypeManagerInterface $entity_type_manager) {
+
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer);
     $this->queryFactory = $query_factory;
     $this->entityTypeManager = $entity_type_manager;
   }
@@ -66,7 +68,7 @@ class EntityIndex extends ServiceDefinitionBase implements ContainerFactoryPlugi
   /**
    * {@inheritdoc}
    */
-  public function processRequest(Request $request, RouteMatchInterface $route_match, SerializerInterface $serializer) {
+  public function processRequest(Request $request, RouteMatchInterface $route_match) {
     $entity_type_id = $this->getDerivativeId();
     $start = 0;
     $limit = 30;

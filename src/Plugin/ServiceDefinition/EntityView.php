@@ -7,10 +7,10 @@ use Drupal\Core\Asset\AssetResolverInterface;
 use Drupal\Core\Asset\AttachedAssets;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Render\RendererInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\services\ServiceDefinitionBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Drupal\Core\Routing\RouteMatchInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -35,7 +35,15 @@ class EntityView extends ServiceDefinitionBase implements ContainerFactoryPlugin
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static($configuration, $plugin_id, $plugin_definition, $container->get('renderer'), $container->get('asset.resolver'), $container->get('asset.css.collection_renderer'), $container->get('asset.js.collection_renderer'));
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('serializer'),
+      $container->get('renderer'),
+      $container->get('asset.resolver'),
+      $container->get('asset.css.collection_renderer'),
+      $container->get('asset.js.collection_renderer'));
   }
 
   /**
@@ -44,8 +52,8 @@ class EntityView extends ServiceDefinitionBase implements ContainerFactoryPlugin
    * @param mixed $plugin_definition
    * @param RendererInterface $renderer
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, RendererInterface $renderer, AssetResolverInterface $asset_resolver, AssetCollectionRendererInterface $css_collection_renderer, AssetCollectionRendererInterface $js_collection_renderer) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, SerializerInterface $serializer, RendererInterface $renderer, AssetResolverInterface $asset_resolver, AssetCollectionRendererInterface $css_collection_renderer, AssetCollectionRendererInterface $js_collection_renderer) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer);
     $this->renderer = $renderer;
     $this->assetResolver = $asset_resolver;
     $this->cssCollectionRenderer = $css_collection_renderer;
@@ -62,7 +70,7 @@ class EntityView extends ServiceDefinitionBase implements ContainerFactoryPlugin
   /**
    * {@inheritdoc}
    */
-  public function processRequest(Request $request, RouteMatchInterface $route_match, SerializerInterface $serializer) {
+  public function processRequest(Request $request, RouteMatchInterface $route_match) {
     $view_mode = 'full';
     if ($request->query->has('view_mode')) {
       $view_mode = $request->query->get('view_mode');

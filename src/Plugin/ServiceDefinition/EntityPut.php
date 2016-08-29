@@ -7,7 +7,6 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\services\ServiceDefinitionEntityRequestContentBase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Routing\Route;
 
 /**
@@ -31,9 +30,9 @@ class EntityPut extends ServiceDefinitionEntityRequestContentBase {
   /**
    * {@inheritdoc}
    */
-  public function processRequest(Request $request, RouteMatchInterface $route_match, SerializerInterface $serializer) {
+  public function processRequest(Request $request, RouteMatchInterface $route_match) {
     try {
-      $updated_entity = parent::processRequest($request, $route_match, $serializer);
+      $updated_entity = parent::processRequest($request, $route_match);
       /** @var $entity \Drupal\Core\Entity\EntityInterface */
       $entity = $this->getContextValue($this->getDerivativeId());
       if ($entity instanceof ContentEntityInterface) {

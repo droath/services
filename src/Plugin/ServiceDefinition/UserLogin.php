@@ -44,8 +44,8 @@ class UserLogin extends ServiceDefinitionBase implements ContainerFactoryPluginI
    *   The entity manager service.
    * @param Session $session
    */
-  public function __construct($configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $config_factory, UserAuthInterface $user_auth, FloodInterface $flood, EntityManagerInterface $entity_manager, Session $session) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
+  public function __construct($configuration, $plugin_id, $plugin_definition, SerializerInterface $serializer, ConfigFactoryInterface $config_factory, UserAuthInterface $user_auth, FloodInterface $flood, EntityManagerInterface $entity_manager, Session $session) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer);
     $this->configFactory = $config_factory;
     $this->userAuth = $user_auth;
     $this->flood = $flood;
@@ -61,6 +61,7 @@ class UserLogin extends ServiceDefinitionBase implements ContainerFactoryPluginI
       $configuration,
       $plugin_id,
       $plugin_definition,
+      $container->get('serializer'),
       $container->get('config.factory'),
       $container->get('user.auth'),
       $container->get('flood'),
@@ -79,9 +80,9 @@ class UserLogin extends ServiceDefinitionBase implements ContainerFactoryPluginI
   /**
    * {@inheritdoc}
    */
-  public function processRequest(Request $request, RouteMatchInterface $route_match, SerializerInterface $serializer) {
-    if ($serializer instanceof DecoderInterface) {
-      $content = $serializer->decode($request->getContent(), $request->getContentType());
+  public function processRequest(Request $request, RouteMatchInterface $route_match) {
+    if ($this->serializer instanceof DecoderInterface) {
+      $content = $this->serializer->decode($request->getContent(), $request->getContentType());
     }
     else {
       throw new HttpException(500, $this->t('The appropriate DecoderInterface was not found.'));

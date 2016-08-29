@@ -7,7 +7,6 @@ use Drupal\Core\Plugin\ContextAwarePluginInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Routing\Route;
 
 /**
@@ -79,16 +78,13 @@ interface ServiceDefinitionInterface extends ContextAwarePluginInterface, Cachea
    *   The request object.
    * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
    *   The route match object.
-   * @param \Symfony\Component\Serializer\SerializerInterface $serializer
-   *   The serializer. Some methods might require the plugin to leverage the
-   *   serializer after extracting the request contents.
    *
    * @return array
    *   The response.
    *
    * @throws \Symfony\Component\HttpKernel\Exception\HttpException
    */
-  public function processRequest(Request $request, RouteMatchInterface $route_match, SerializerInterface $serializer);
+  public function processRequest(Request $request, RouteMatchInterface $route_match);
 
   /**
    * Allow plugins to alter the response object before it is returned.

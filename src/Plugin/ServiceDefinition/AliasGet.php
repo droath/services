@@ -13,7 +13,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @ServiceDefinition(
@@ -37,8 +36,14 @@ class AliasGet extends ServiceDefinitionBase implements ContainerFactoryPluginIn
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static($configuration, $plugin_id, $plugin_definition, $container->get('path.alias_manager'));
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, SerializerInterface $serializer) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $serializer,
+      $container->get('path.alias_manager')
+    );
   }
 
   /**
@@ -47,14 +52,14 @@ class AliasGet extends ServiceDefinitionBase implements ContainerFactoryPluginIn
    * @param mixed $plugin_definition
    * @param \Drupal\Core\Path\AliasManagerInterface $alias_manager
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, AliasManagerInterface $alias_manager) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, SerializerInterface $serializer, AliasManagerInterface $alias_manager) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer);
     $this->aliasManager = $alias_manager;
   }
   /**
    * {@inheritdoc}
    */
-  public function processRequest(Request $request, RouteMatchInterface $route_match, SerializerInterface $serializer) {
+  public function processRequest(Request $request, RouteMatchInterface $route_match) {
     // The query string parameter 'path' must exist in order to load the
     // node that correlates to path value provided.
     if (!$request->query->has('path')) {

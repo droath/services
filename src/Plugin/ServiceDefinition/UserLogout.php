@@ -6,7 +6,6 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\services\ServiceDefinitionBase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @ServiceDefinition(
@@ -32,7 +31,7 @@ class UserLogout extends ServiceDefinitionBase  {
   /**
    * {@inheritdoc}
    */
-  public function processRequest(Request $request, RouteMatchInterface $route_match, SerializerInterface $serializer) {
+  public function processRequest(Request $request, RouteMatchInterface $route_match) {
     user_logout();
     drupal_set_message(t('User successfully logged out'), 'status', FALSE);
 

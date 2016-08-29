@@ -6,7 +6,6 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\services\ServiceDefinitionBase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @ServiceDefinition(
@@ -30,7 +29,7 @@ class EntityDelete extends ServiceDefinitionBase {
   /**
    * {@inheritdoc}
    */
-  public function processRequest(Request $request, RouteMatchInterface $route_match, SerializerInterface $serializer) {
+  public function processRequest(Request $request, RouteMatchInterface $route_match) {
     /** @var $entity \Drupal\Core\Entity\EntityInterface */
     $entity = $this->getContextValue($this->getDerivativeId());
     $entity->delete();

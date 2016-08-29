@@ -23,7 +23,13 @@ class ServiceDefinitionEntityRequestContentBase extends ServiceDefinitionBase im
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static ($configuration, $plugin_id, $plugin_definition, $container->get('entity.manager'));
+    return new static (
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('serializer'),
+      $container->get('entity.manager')
+    );
   }
 
   /**
@@ -32,8 +38,8 @@ class ServiceDefinitionEntityRequestContentBase extends ServiceDefinitionBase im
    * @param mixed $plugin_definition
    * @param EntityManagerInterface $manager
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityManagerInterface $manager) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, SerializerInterface $serializer, EntityManagerInterface $manager) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer);
     $this->manager = $manager;
   }
 

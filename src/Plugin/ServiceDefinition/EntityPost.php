@@ -8,7 +8,6 @@ use Drupal\services\ServiceDefinitionEntityRequestContentBase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @ServiceDefinition(
@@ -32,8 +31,8 @@ class EntityPost extends ServiceDefinitionEntityRequestContentBase {
   /**
    * {@inheritdoc}
    */
-  public function processRequest(Request $request, RouteMatchInterface $route_match, SerializerInterface $serializer) {
-    $entity = parent::processRequest($request, $route_match, $serializer);
+  public function processRequest(Request $request, RouteMatchInterface $route_match) {
+    $entity = parent::processRequest($request, $route_match);
     if ($entity) {
       try {
         $entity->save();
